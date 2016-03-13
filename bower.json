@@ -1,0 +1,27 @@
+{
+  "name": "tb-jslib",
+  "version": "0.0.1",
+  "homepage": "https://github.com/abstractiondev/tb-jslib",
+  "authors": [
+    "Kalle Launiala <kalle.launiala@protonit.net>"
+  ],
+  "description": "The Ball Javascript support library",
+  "main": "",
+  "moduleType": [
+    "globals"
+  ],
+  "keywords": [
+    "Ball"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": ">=2.0.3"
+  }
+}
