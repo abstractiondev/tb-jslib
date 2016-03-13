@@ -6,7 +6,12 @@
     "Kalle Launiala <kalle.launiala@protonit.net>"
   ],
   "description": "The Ball Javascript support library",
-  "main": "",
+  "main": [
+    "./TheBall.Interface.UI/DataConnectionManager.js",
+    "./TheBall.Interface.UI/OperationManager.js",
+    "./TheBall.Interface.UI/TemplateModuleManager.js",
+    "./TheBall.Interface.UI/UpdatingDataGetter.js"
+  ],
   "moduleType": [
     "globals"
   ],
