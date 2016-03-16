@@ -457,3 +457,6 @@ var TheBall;
         })(UI = Interface.UI || (Interface.UI = {}));
     })(Interface = TheBall.Interface || (TheBall.Interface = {}));
 })(TheBall || (TheBall = {}));
+var OperationManager = TheBall.Interface.UI.OperationManager;
+var $TB = new OperationManager(null, null);
+//# sourceMappingURL=OperationManager.js.map

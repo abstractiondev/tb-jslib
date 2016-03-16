@@ -506,3 +506,7 @@ module TheBall.Interface.UI {
          */
     }
 }
+
+import OperationManager = TheBall.Interface.UI.OperationManager;
+var $TB = new OperationManager(null, null);
+

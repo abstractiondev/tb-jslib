@@ -157,3 +157,4 @@ var TheBall;
         })(UI = Interface.UI || (Interface.UI = {}));
     })(Interface = TheBall.Interface || (TheBall.Interface = {}));
 })(TheBall || (TheBall = {}));
+//# sourceMappingURL=DataConnectionManager.js.map

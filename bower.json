@@ -1,16 +1,14 @@
 {
   "name": "tb-jslib",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "homepage": "https://github.com/abstractiondev/tb-jslib",
   "authors": [
     "Kalle Launiala <kalle.launiala@protonit.net>"
   ],
   "description": "The Ball Javascript support library",
   "main": [
-    "./TheBall.Interface.UI/DataConnectionManager.js",
-    "./TheBall.Interface.UI/OperationManager.js",
-    "./TheBall.Interface.UI/TemplateModuleManager.js",
-    "./TheBall.Interface.UI/UpdatingDataGetter.js"
+    "./dist/scripts/tb-jslib.js",
+    "./dist/scripts/tb-jslib.min.js",
   ],
   "moduleType": [
     "globals"
