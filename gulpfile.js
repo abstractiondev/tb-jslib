@@ -39,10 +39,10 @@ gulp.task('scripts', function() {
         .pipe(jshint('.jshintrc'))
         .pipe(jshint.reporter('default'))
         .pipe(concat('tb-jslib.js'))
-        .pipe(gulp.dest('dist/scripts'))
+        .pipe(gulp.dest('dist'))
         .pipe(rename({ suffix: '.min' }))
         .pipe(uglify())
-        .pipe(gulp.dest('dist/scripts'))
+        .pipe(gulp.dest('dist'))
         .pipe(notify({ message: 'Scripts task complete' }));
 });
 
@@ -56,7 +56,7 @@ gulp.task('images', function() {
 
 // Clean
 gulp.task('clean', function() {
-    return del(['dist/styles', 'dist/scripts', 'dist/images']);
+    return del(['dist/styles', 'dist', 'dist/images']);
 });
 
 // Default task
