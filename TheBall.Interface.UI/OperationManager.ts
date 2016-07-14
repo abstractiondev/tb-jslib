@@ -123,7 +123,7 @@ module TheBall.Interface.UI {
                     } else {
                         console.log("OP Retrying in 1 sec... total count: " + totalSecs);
                         totalSecs++;
-                        setTimeout(() => { retryFunc(retryFunc, finishFunc); }, 1000);
+                        setTimeout(() => { retryFunc(retryFunc, finishFunc, $deferred); }, 1000);
                     }
                 }).fail(function() {
                     if(finishFunc)

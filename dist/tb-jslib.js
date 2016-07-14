@@ -278,7 +278,7 @@ var TheBall;
                             else {
                                 console.log("OP Retrying in 1 sec... total count: " + totalSecs);
                                 totalSecs++;
-                                setTimeout(function () { retryFunc(retryFunc, finishFunc); }, 1000);
+                                setTimeout(function () { retryFunc(retryFunc, finishFunc, $deferred); }, 1000);
                             }
                         }).fail(function () {
                             if (finishFunc)
