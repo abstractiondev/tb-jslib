@@ -108,7 +108,8 @@ module TheBall.Interface.UI {
             var totalSecs = 0;
             var operationID = response.OperationID;
             var opPollUrl = "../../TheBall.Interface/InterfaceOperation/" + operationID + ".json";
-            var pollFunc = (retryFunc, finishFunc) => {
+            var $deferredResult = $.Deferred();
+            var pollFunc = (retryFunc, finishFunc, $deferred) => {
                 $.ajax(opPollUrl).done(response => {
                     if(response && response.ErrorMessage) {
                         console.log("OP Error: " + totalSecs);
@@ -116,15 +117,22 @@ module TheBall.Interface.UI {
                             ErrorCode: response.ErrorCode,
                             ErrorMessage: response.ErrorMessage
                         };
-                        userFailure(errorObject)
+                        if(userFailure)
+                            userFailure(errorObject);
+                        $deferred.reject(errorObject);
                     } else {
                         console.log("OP Retrying in 1 sec... total count: " + totalSecs);
                         totalSecs++;
                         setTimeout(() => { retryFunc(retryFunc, finishFunc); }, 1000);
                     }
-                }).fail(finishFunc);
+                }).fail(function() {
+                    if(finishFunc)
+                        finishFunc();
+                    $deferred.resolve();
+                });
             };
-            pollFunc(pollFunc, userSuccess);
+            pollFunc(pollFunc, userSuccess, $deferredResult);
+            return $deferredResult.promise();
         }
 
         SaveObject(objectID:string, objectETag:string, dataContents:any) {
@@ -223,6 +231,7 @@ module TheBall.Interface.UI {
             }).done(response => { me.AjaxPollingOperation(response, userSuccess, userFailure) }).fail(userFailure);
             $form.empty();
         }
+
         ExecuteOperationWithAjax(operationFullName:string, contentObject:any, successCallback?:any, failureCallback?:any) {
             var jsonData = JSON.stringify(contentObject);
             if(!failureCallback)
@@ -233,13 +242,16 @@ module TheBall.Interface.UI {
                     successCallback(responseData);
             };
             var me = this;
-            $.ajax(
+            return $.ajax(
                 { type: "POST",
                     url: "?operation=" + operationFullName,
                     contentType: "application/json",
                     data: jsonData,
                 }
-            ).done(response => { me.AjaxPollingOperation(response, userSuccess, userFailure) }).fail(userFailure);
+            ).then(response => {
+                var $promise = me.AjaxPollingOperation(response, userSuccess, userFailure);
+                return $promise;
+            }, userFailure);
         }
 
         setButtonMode($button, mode) {

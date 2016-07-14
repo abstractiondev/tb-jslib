@@ -32,7 +32,7 @@ var TheBall;
                     return this.file.name + ":" + this.content;
                 };
                 return BinaryFileItem;
-            })();
+            }());
             UI.BinaryFileItem = BinaryFileItem;
             var OperationManager = (function () {
                 function OperationManager(dcm, binaryFileSelectorBase) {
@@ -102,7 +102,8 @@ var TheBall;
                     var totalSecs = 0;
                     var operationID = response.OperationID;
                     var opPollUrl = "../../TheBall.Interface/InterfaceOperation/" + operationID + ".json";
-                    var pollFunc = function (retryFunc, finishFunc) {
+                    var $deferredResult = $.Deferred();
+                    var pollFunc = function (retryFunc, finishFunc, $deferred) {
                         $.ajax(opPollUrl).done(function (response) {
                             if (response && response.ErrorMessage) {
                                 console.log("OP Error: " + totalSecs);
@@ -110,16 +111,23 @@ var TheBall;
                                     ErrorCode: response.ErrorCode,
                                     ErrorMessage: response.ErrorMessage
                                 };
-                                userFailure(errorObject);
+                                if (userFailure)
+                                    userFailure(errorObject);
+                                $deferred.reject(errorObject);
                             }
                             else {
                                 console.log("OP Retrying in 1 sec... total count: " + totalSecs);
                                 totalSecs++;
                                 setTimeout(function () { retryFunc(retryFunc, finishFunc); }, 1000);
                             }
-                        }).fail(finishFunc);
+                        }).fail(function () {
+                            if (finishFunc)
+                                finishFunc();
+                            $deferred.resolve();
+                        });
                     };
-                    pollFunc(pollFunc, userSuccess);
+                    pollFunc(pollFunc, userSuccess, $deferredResult);
+                    return $deferredResult.promise();
                 };
                 OperationManager.prototype.SaveObject = function (objectID, objectETag, dataContents) {
                     var obj = this.DCM.TrackedObjectStorage[objectID];
@@ -222,11 +230,14 @@ var TheBall;
                             successCallback(responseData);
                     };
                     var me = this;
-                    $.ajax({ type: "POST",
+                    return $.ajax({ type: "POST",
                         url: "?operation=" + operationFullName,
                         contentType: "application/json",
                         data: jsonData
-                    }).done(function (response) { me.AjaxPollingOperation(response, userSuccess, userFailure); }).fail(userFailure);
+                    }).then(function (response) {
+                        var $promise = me.AjaxPollingOperation(response, userSuccess, userFailure);
+                        return $promise;
+                    }, userFailure);
                 };
                 OperationManager.prototype.setButtonMode = function ($button, mode) {
                     var buttonText = mode == "add" ? "Add Image" : "Remove Image";
@@ -452,7 +463,7 @@ var TheBall;
                     });
                 };
                 return OperationManager;
-            })();
+            }());
             UI.OperationManager = OperationManager;
         })(UI = Interface.UI || (Interface.UI = {}));
     })(Interface = TheBall.Interface || (TheBall.Interface = {}));
