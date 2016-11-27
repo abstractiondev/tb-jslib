@@ -380,6 +380,22 @@ var TheBall;
                     }).done(function (response) { me.AjaxPollingOperation(response, userSuccess, userFailure); }).fail(userFailure);
                     $form.empty();
                 };
+                OperationManager.prototype.ExecuteOperationWithAjaxImmediate = function (operationFullName, contentObject, postbackPageUrl) {
+                    var jsonData = JSON.stringify(contentObject);
+                    var me = this;
+                    var operationUrl = "?operation=" + operationFullName;
+                    var postbackUrl = postbackPageUrl ? postbackPageUrl + operationUrl : operationUrl;
+                    var ajaxPromise = $.ajax({
+                        type: "POST",
+                        url: postbackUrl,
+                        contentType: "application/json",
+                        data: jsonData
+                    });
+                    var processedPromise = ajaxPromise.then(function (response) {
+                        return response.data;
+                    });
+                    return processedPromise;
+                };
                 OperationManager.prototype.ExecuteOperationWithAjax = function (operationFullName, contentObject, successCallback, failureCallback) {
                     var jsonData = JSON.stringify(contentObject);
                     if (!failureCallback)

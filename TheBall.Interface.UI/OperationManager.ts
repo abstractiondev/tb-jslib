@@ -232,6 +232,25 @@ module TheBall.Interface.UI {
             $form.empty();
         }
 
+        ExecuteOperationWithAjaxImmediate(operationFullName:string, contentObject:any, postbackPageUrl?:string) {
+            var jsonData = JSON.stringify(contentObject);
+            var me = this;
+            var operationUrl = "?operation=" + operationFullName;
+            var postbackUrl = postbackPageUrl ? postbackPageUrl + operationUrl : operationUrl;
+            var ajaxPromise = $.ajax(
+                {
+                    type: "POST",
+                    url: postbackUrl,
+                    contentType: "application/json",
+                    data: jsonData,
+                }
+            );
+            var processedPromise = ajaxPromise.then(response => {
+                return response.data;
+            });
+            return processedPromise;
+        }
+
         ExecuteOperationWithAjax(operationFullName:string, contentObject:any, successCallback?:any, failureCallback?:any) {
             var jsonData = JSON.stringify(contentObject);
             if(!failureCallback)
