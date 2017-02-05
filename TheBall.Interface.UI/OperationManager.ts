@@ -110,16 +110,21 @@ module TheBall.Interface.UI {
             var opPollUrl = "../../TheBall.Interface/InterfaceOperation/" + operationID + ".json";
             var $deferredResult = $.Deferred();
             var pollFunc = (retryFunc, finishFunc, $deferred) => {
-                $.ajax(opPollUrl).done(response => {
-                    if(response && response.ErrorMessage) {
+                $.ajax(opPollUrl).done((data, textStatus, xhr) => {
+                    if(data && data.ErrorMessage) {
                         console.log("OP Error: " + totalSecs);
                         var errorObject = {
-                            ErrorCode: response.ErrorCode,
-                            ErrorMessage: response.ErrorMessage
+                            ErrorCode: data.ErrorCode,
+                            ErrorMessage: data.ErrorMessage
                         };
                         if(userFailure)
                             userFailure(errorObject);
                         $deferred.reject(errorObject);
+                    } else if(xhr.status == 204) {
+                        console.log("OP Finished OK");
+                        if(finishFunc)
+                            finishFunc();
+                        $deferred.resolve();
                     } else {
                         console.log("OP Retrying in 1 sec... total count: " + totalSecs);
                         totalSecs++;
