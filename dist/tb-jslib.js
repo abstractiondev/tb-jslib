@@ -52,9 +52,11 @@ var TheBall;
                     this.InitialTick = "";
                     var initialStatusFetch = $.ajax({
                         url: "../../TheBall.Interface/StatusSummary/default.json", cache: true,
-                        async: false
+                        async: true
                     });
                     $.when(initialStatusFetch).then(function (data) {
+                        if (!data)
+                            return;
                         var initialTimestamp;
                         if (data.ChangeItemTrackingList.length > 0)
                             initialTimestamp = data.ChangeItemTrackingList[0];
